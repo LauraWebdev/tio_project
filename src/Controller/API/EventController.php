@@ -3,6 +3,7 @@
 namespace App\Controller\API;
 
 use App\Entity\Event;
+use App\Exception\EventDoesNotExistException;
 use App\Service\EventService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +42,7 @@ class EventController extends AbstractController
             ], 404);
         }
 
-        return $this->json($event->toMinimalArray(false));
+        return $this->json($event->toMinimalArray(true));
     }
 
     #[Route('/api/events', name: 'app_events_create', methods: ['POST'])]
@@ -78,12 +79,19 @@ class EventController extends AbstractController
             ], 404);
         }
 
-        $event = $eventService->update(
-            $eventId,
-            $parameters['title'] ?? $event->getTitle(),
-            $parameters['date'] ?? $event->getDate()->format("c"),
-            $parameters['city'] ?? $event->getCity()
-        );
+        try {
+            $event = $eventService->update(
+                $eventId,
+                $parameters['title'] ?? $event->getTitle(),
+                $parameters['date'] ?? $event->getDate()->format("c"),
+                $parameters['city'] ?? $event->getCity()
+            );
+        } catch(EventDoesNotExistException $e) {
+            return $this->json([
+                'slug' => 'event_not_found',
+                'message' => 'There is no event with this ID',
+            ], 404);
+        }
 
         return $this->json($event->toMinimalArray(false));
     }
@@ -100,7 +108,14 @@ class EventController extends AbstractController
             ], 404);
         }
 
-        $eventService->remove($eventId);
+        try {
+            $eventService->remove($eventId);
+        } catch(EventDoesNotExistException $e) {
+            return $this->json([
+                'slug' => 'event_not_found',
+                'message' => 'There is no event with this ID',
+            ], 404);
+        }
 
         return $this->json([
             'slug' => 'event_deleted',

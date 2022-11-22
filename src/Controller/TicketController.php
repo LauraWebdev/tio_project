@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\Ticket;
+use App\Exception\EventDoesNotExistException;
+use App\Exception\TicketDoesNotExistException;
 use App\Service\EventService;
 use App\Service\TicketService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,12 +50,21 @@ class TicketController extends AbstractController
             return $this->redirectToRoute('app_ticket_create');
         }
 
-        $newTicket = $ticketService->create(
-            $event->getId(),
-            $request->request->get('barcode'),
-            $request->request->get('firstName'),
-            $request->request->get('lastName'),
-        );
+        try {
+            $newTicket = $ticketService->create(
+                $event->getId(),
+                $request->request->get('barcode'),
+                $request->request->get('firstName'),
+                $request->request->get('lastName'),
+            );
+        } catch(EventDoesNotExistException $e) {
+            $this->addFlash(
+                'error',
+                'Dieses Event existiert nicht.'
+            );
+
+            return $this->redirectToRoute('app_index');
+        }
 
         return $this->redirectToRoute('app_event_detail', ['eventId' => $event->getId()]);
     }
@@ -82,7 +93,16 @@ class TicketController extends AbstractController
             return $this->redirectToRoute('app_index');
         }
 
-        $ticketService->remove($ticket->getId());
+        try {
+            $ticketService->remove($ticket->getId());
+        } catch(TicketDoesNotExistException $e) {
+            $this->addFlash(
+                'error',
+                'Dieses Ticket existiert nicht.'
+            );
+
+            return $this->redirectToRoute('app_index');
+        }
 
         return $this->redirectToRoute('app_event_detail', ['eventId' => $event->getId()]);
     }
@@ -111,7 +131,16 @@ class TicketController extends AbstractController
             return $this->redirectToRoute('app_index');
         }
 
-        $ticketService->regenerateBarcode($ticket->getId());
+        try {
+            $ticketService->regenerateBarcode($ticket->getId());
+        } catch(TicketDoesNotExistException $e) {
+            $this->addFlash(
+                'error',
+                'Dieses Ticket existiert nicht.'
+            );
+
+            return $this->redirectToRoute('app_index');
+        }
 
         return $this->redirectToRoute('app_event_detail', ['eventId' => $event->getId()]);
     }
@@ -179,12 +208,21 @@ class TicketController extends AbstractController
             return $this->redirectToRoute('app_ticket_edit', ['eventId' => $event->getId(), 'ticketId' => $ticket->getId()]);
         }
 
-        $updatedTicket = $ticketService->update(
-            $ticket->getId(),
-            $request->request->get('barcode'),
-            $request->request->get('firstName'),
-            $request->request->get('lastName'),
-        );
+        try {
+            $updatedTicket = $ticketService->update(
+                $ticket->getId(),
+                $request->request->get('barcode'),
+                $request->request->get('firstName'),
+                $request->request->get('lastName'),
+            );
+        } catch(TicketDoesNotExistException $e) {
+            $this->addFlash(
+                'error',
+                'Dieses Ticket existiert nicht.'
+            );
+
+            return $this->redirectToRoute('app_index');
+        }
 
         return $this->redirectToRoute('app_event_detail', ['eventId' => $event->getId()]);
     }

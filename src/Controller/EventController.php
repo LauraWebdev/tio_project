@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\Ticket;
+use App\Exception\EventDoesNotExistException;
 use App\Service\EventService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,7 +56,16 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_index');
         }
 
-        $eventService->remove($event->getId());
+        try {
+            $eventService->remove($event->getId());
+        } catch(EventDoesNotExistException $e) {
+            $this->addFlash(
+                'error',
+                'Dieses Event existiert nicht.'
+            );
+
+            return $this->redirectToRoute('app_index');
+        }
 
         return $this->redirectToRoute('app_index');
     }
@@ -123,12 +133,21 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_event_edit', ['eventId' => $event->getId()]);
         }
 
-        $updatedEvent = $eventService->update(
-            $eventId,
-            $request->request->get('title'),
-            $request->request->get('date'),
-            $request->request->get('city'),
-        );
+        try {
+            $updatedEvent = $eventService->update(
+                $eventId,
+                $request->request->get('title'),
+                $request->request->get('date'),
+                $request->request->get('city'),
+            );
+        } catch(EventDoesNotExistException $e) {
+            $this->addFlash(
+                'error',
+                'Dieses Event existiert nicht.'
+            );
+
+            return $this->redirectToRoute('app_index');
+        }
 
         return $this->redirectToRoute('app_event_detail', ['eventId' => $updatedEvent->getId()]);
     }

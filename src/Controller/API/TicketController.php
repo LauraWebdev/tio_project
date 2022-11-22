@@ -3,6 +3,8 @@
 namespace App\Controller\API;
 
 use App\Entity\Ticket;
+use App\Exception\EventDoesNotExistException;
+use App\Exception\TicketDoesNotExistException;
 use App\Service\TicketService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,12 +43,19 @@ class TicketController extends AbstractController
             ], 400);
         }
 
-        $newTicket = $ticketService->create(
-            $parameters['eventId'],
-            $parameters['barcode'] ?? '',
-            $parameters['firstName'],
-            $parameters['lastName'],
-        );
+        try {
+            $newTicket = $ticketService->create(
+                $parameters['eventId'],
+                $parameters['barcode'] ?? '',
+                $parameters['firstName'],
+                $parameters['lastName'],
+            );
+        } catch(EventDoesNotExistException $e) {
+            return $this->json([
+                'slug' => 'event_not_found',
+                'message' => 'There is no event with this ID',
+            ], 404);
+        }
 
         return $this->json($newTicket->toMinimalArray(true));
     }
@@ -94,7 +103,14 @@ class TicketController extends AbstractController
             ], 404);
         }
 
-        $ticketService->remove($ticketId);
+        try {
+            $ticketService->remove($ticketId);
+        } catch(TicketDoesNotExistException $e) {
+            return $this->json([
+                'slug' => 'ticket_not_found',
+                'message' => 'There is no ticket with this ID',
+            ], 404);
+        }
 
         return $this->json([
             'slug' => 'ticket_deleted',
@@ -115,12 +131,19 @@ class TicketController extends AbstractController
             ], 404);
         }
 
-        $ticket = $ticketService->update(
-            $ticketId,
-            $parameters['barcode'] ?? $ticket->getBarcode(),
-            $parameters['firstName'] ?? $ticket->getFirstName(),
-            $parameters['lastName'] ?? $ticket->getLastName()
-        );
+        try {
+            $ticket = $ticketService->update(
+                $ticketId,
+                $parameters['barcode'] ?? $ticket->getBarcode(),
+                $parameters['firstName'] ?? $ticket->getFirstName(),
+                $parameters['lastName'] ?? $ticket->getLastName()
+            );
+        } catch(TicketDoesNotExistException $e) {
+            return $this->json([
+                'slug' => 'ticket_not_found',
+                'message' => 'There is no ticket with this ID',
+            ], 404);
+        }
 
         return $this->json($ticket->toMinimalArray(true));
     }

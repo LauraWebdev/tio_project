@@ -114,7 +114,9 @@ class Event
         ];
 
         if($includeTickets) {
-            $data['tickets'] = $this->tickets;
+            foreach($this->tickets as $ticket) {
+                $data['tickets'][] = $ticket->toMinimalArray(false);
+            }
         }
 
         return $data;
