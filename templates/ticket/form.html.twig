@@ -1,0 +1,18 @@
+<form action="{{ ticket is defined ? path('app_ticket_edit_save', {'eventId': event.id, 'ticketId': ticket.id}) : path('app_ticket_create_save', {'eventId': event.id}) }}" method="post">
+    <label>
+        <span>Vorname</span>
+        <input type="text" placeholder="Vorname" name="firstName" value="{{ ticket.firstName is defined ? ticket.firstName : '' }}" required />
+    </label>
+
+    <label>
+        <span>Nachname</span>
+        <input type="text" placeholder="Nachname" name="lastName" value="{{ ticket.lastName is defined ? ticket.lastName : '' }}" required />
+    </label>
+
+    <label>
+        <span>Barcode</span>
+        <input type="text" placeholder="Barcode" name="barcode" maxlength="8" pattern="[a-zA-Z0-9 ]+" value="{{ ticket.barcode is defined ? ticket.barcode : '' }}" />
+    </label>
+
+    <input type="submit" value="Speichern" />
+</form>

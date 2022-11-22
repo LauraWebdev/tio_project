@@ -1,0 +1,21 @@
+.event-crud, .ticket-crud {
+  width: calc(100% - 50px);
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 50px 0;
+}
+.event-crud form, .ticket-crud form {
+  display: grid;
+  grid-gap: 25px;
+}
+.event-crud form label, .ticket-crud form label {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 25px;
+  align-items: center;
+}
+.event-crud form input[type=submit], .ticket-crud form input[type=submit] {
+  justify-self: flex-end;
+}
+
+/*# sourceMappingURL=crud.css.map */

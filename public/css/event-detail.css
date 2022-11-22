@@ -1,0 +1,54 @@
+.event-detail {
+  width: calc(100% - 50px);
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 50px 0;
+}
+.event-detail aside {
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  margin-bottom: 50px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-gap: 15px;
+  align-items: center;
+}
+.event-detail aside h1 {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+.event-detail aside h2 {
+  margin-bottom: 3px;
+  font-weight: normal;
+}
+.event-detail aside p {
+  color: rgba(255, 255, 255, 0.4);
+}
+.event-detail .tickets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+.event-detail .tickets .ticket {
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-gap: 15px;
+  align-items: center;
+}
+.event-detail .tickets .ticket h1 {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+.event-detail .tickets .ticket h2 {
+  margin-bottom: 3px;
+  font-weight: normal;
+}
+.event-detail .tickets .ticket p {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/*# sourceMappingURL=event-detail.css.map */

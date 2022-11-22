@@ -1,0 +1,53 @@
+{% extends './base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/event-detail.css') }}" />
+{% endblock %}
+
+{% block body %}
+    <section class="event-detail">
+        <aside>
+            <div class="meta">
+                <h1>{{ event.title }}</h1>
+                <h2>{{ event.city }}</h2>
+                <p>{{ event.date|date("d.m.Y") }}</p>
+            </div>
+
+            <div class="actions">
+                <a href="{{ path('app_event_edit', {'eventId': event.id}) }}"><span class="mdi mdi-pencil"></span></a>
+                <a href="{{ path('app_event_remove', {'eventId': event.id}) }}"><span class="mdi mdi-trash-can-outline"></span></a>
+            </div>
+        </aside>
+        <div class="tickets">
+            <div class="section-header">
+                <h1>Tickets</h1>
+
+                <div class="actions">
+                    <a href="{{ path('app_ticket_create', {'eventId': event.id}) }}"><span class="mdi mdi-plus"></span></a>
+                </div>
+            </div>
+
+            {% for ticket in event.tickets %}
+                <div class="ticket">
+                    <div class="meta">
+                        <h1>{{ ticket.firstName }} {{ ticket.lastName }}</h1>
+                        <h2>{{ ticket.barcode }}</h2>
+                    </div>
+
+                    <div class="actions">
+                        <a href="{{ path('app_ticket_regenerateBarcode', {'eventId': event.id, 'ticketId': ticket.id}) }}"><span class="mdi mdi-dice-multiple-outline"></span></a>
+                        <a href="{{ path('app_ticket_edit', {'eventId': event.id, 'ticketId': ticket.id}) }}"><span class="mdi mdi-pencil"></span></a>
+                        <a href="{{ path('app_ticket_remove', {'eventId': event.id, 'ticketId': ticket.id}) }}"><span class="mdi mdi-trash-can-outline"></span></a>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if event.tickets|length == 0 %}
+                <div class="no-items-box">
+                    <span class="mdi mdi-ticket-confirmation-outline"></span>
+                    <h1>Hier gibt es nichts zu sehen!</h1>
+                    <p>Derzeit gibt es keine Tickets, die du dir ansehen könntest.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

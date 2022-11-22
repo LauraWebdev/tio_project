@@ -1,0 +1,18 @@
+<form action="{{ event is defined ? path('app_event_edit_save', {'eventId': event.id}) : path('app_event_create_save') }}" method="post">
+    <label>
+        <span>Titel</span>
+        <input type="text" placeholder="Titel" name="title" value="{{ event.title is defined ? event.title : '' }}" required />
+    </label>
+
+    <label>
+        <span>Datum</span>
+        <input type="date" placeholder="Datum" name="date" value="{{ event.date is defined ? event.date|date('Y-m-d') : '' }}" required />
+    </label>
+
+    <label>
+        <span>Stadt</span>
+        <input type="text" placeholder="Stadt" name="city" value="{{ event.city is defined ? event.city : '' }}" required />
+    </label>
+
+    <input type="submit" value="Speichern" />
+</form>

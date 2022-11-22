@@ -1,0 +1,11 @@
+{% extends './base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/crud.css') }}" />
+{% endblock %}
+
+{% block body %}
+    <section class="event-crud">
+        {% include './event/form.html.twig' with {'event': event} %}
+    </section>
+{% endblock %}
